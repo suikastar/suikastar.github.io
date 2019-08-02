@@ -6,6 +6,14 @@
     </url>
     
     <url>
+        <loc>http://suikastar.com/404.html</loc>
+        
+        <lastmod>2019-08-02T11:42:12.326Z</lastmod>
+        
+        <priority>0.5</priority>
+    </url>
+    
+    <url>
         <loc>http://suikastar.com/posts/14197/</loc>
         
         <lastmod>2019-08-02T11:20:33.127Z</lastmod>
@@ -41,14 +49,6 @@
         <loc>http://suikastar.com/posts/18691/</loc>
         
         <lastmod>2019-08-02T10:19:19.274Z</lastmod>
-        
-        <priority>0.5</priority>
-    </url>
-    
-    <url>
-        <loc>http://suikastar.com//404.html</loc>
-        
-        <lastmod>2019-08-02T10:19:19.268Z</lastmod>
         
         <priority>0.5</priority>
     </url>
