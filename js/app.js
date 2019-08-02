@@ -1,0 +1,1 @@
+$("table:has(img)").addClass("nexmoe-album"),$("article:not(.nexmoe-links) img").each(function(){var a=document.createElement("a");$(a).attr("data-fancybox","gallery"),$(a).attr("href",$(this).attr("src")),$(a).attr("title",$(this).attr("alt")),$(this).wrap(a)}),$("#nexmoe-sidebar a").addClass("mdui-ripple"),mdui.mutation();
