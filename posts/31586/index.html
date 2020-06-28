@@ -1,0 +1,143 @@
+<!DOCTYPE html><html><head><meta name="generator" content="Hexo 3.9.0"><title>Java 中的线程有几种状态 - 西瓜星 🍉✨</title><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><script>!function(e,t,a,n){e[n]=e[n]||[],e[n].push({"gtm.start":(new Date).getTime(),event:"gtm.js"});var g=t.getElementsByTagName(a)[0],m=t.createElement(a);m.async=!0,m.src="https://www.googletagmanager.com/gtm.js?id=GTM-MTHFNXR",g.parentNode.insertBefore(m,g)}(window,document,"script","dataLayer")</script><link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/suikastar/suikastar.github.io@jsdelivr-20200628040132/images/favicon.png" type="image/png"><meta name="description" content="有说 5 种的，有说 6 种的，还有说 9 种的，各执一词，究竟谁对谁错？"><meta name="keywords" content="Java,线程"><meta property="og:type" content="article"><meta property="og:title" content="Java 中的线程有几种状态"><meta property="og:url" content="http://suikastar.com/posts/31586/index.html"><meta property="og:site_name" content="西瓜星 🍉✨"><meta property="og:description" content="有说 5 种的，有说 6 种的，还有说 9 种的，各执一词，究竟谁对谁错？"><meta property="og:locale" content="zh-CN"><meta property="og:updated_time" content="2020-06-28T04:01:13.477Z"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Java 中的线程有几种状态"><meta name="twitter:description" content="有说 5 种的，有说 6 种的，还有说 9 种的，各执一词，究竟谁对谁错？"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdui@0.4.3/dist/css/mdui.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.9/build/styles/atom-one-dark.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css"><link rel="stylesheet" href="https://at.alicdn.com/t/font_1038733_0xvrvpg9c0r.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/suikastar/suikastar.github.io@jsdelivr-20200628040132/css/style.css"><script src="https://cdn.jsdelivr.net/gh/suikastar/suikastar.github.io@jsdelivr-20200628040132/js/tools.js"></script></head><body class="mdui-drawer-body-left"><noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MTHFNXR" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript><div id="nexmoe-background"><script>var url=get_img_url({default:{url:"https://cdn.jsdelivr.net/gh/suikastar/suikastar.github.io@jsdelivr-20200628040132/images/street_daytime.jpg",w:1920,h:1080},interval:{"6-16":{url:"https://cdn.jsdelivr.net/gh/suikastar/suikastar.github.io@jsdelivr-20200628040132/images/street_daytime.jpg",w:1920,h:1080},"16-19":{url:"https://cdn.jsdelivr.net/gh/suikastar/suikastar.github.io@jsdelivr-20200628040132/images/street_nightfall.jpg",w:1920,h:1080},"19-6":{url:"https://cdn.jsdelivr.net/gh/suikastar/suikastar.github.io@jsdelivr-20200628040132/images/street_at_night.jpg",w:1920,h:1080}}});document.write('<div class="nexmoe-bg" style="background-image: url('+url+')"></div>')</script><div class="mdui-appbar mdui-shadow-0 nexmoe-layout-top"><div class="mdui-toolbar"><a mdui-drawer="{target: '#drawer', swipe: true}" title="menu" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">menu</i></a><div class="mdui-toolbar-spacer"></div><a href="/" title="suika" class="mdui-btn mdui-btn-icon nexmoe-layout-top-icon"><img src="https://cdn.jsdelivr.net/gh/suikastar/suikastar.github.io@jsdelivr-20200628040132/images/avatar.jpg"></a></div></div></div><div id="nexmoe-header"><div class="nexmoe-drawer mdui-drawer" id="drawer"><div class="nexmoe-avatar mdui-ripple"><a href="/" title="suika"><img src="https://cdn.jsdelivr.net/gh/suikastar/suikastar.github.io@jsdelivr-20200628040132/images/avatar.jpg" alt="suika"></a></div><div class="nexmoe-count"><div><span>文章</span>14</div><div><span>标签</span>15</div><div><span>分类</span>2</div></div><ul class="nexmoe-list mdui-list" mdui-collapse="{accordion: true}"><a class="nexmoe-list-item mdui-list-item mdui-ripple" href="/" title="回到首页"><i class="mdui-list-item-icon nexmoefont icon-home"></i><div class="mdui-list-item-content">回到首页</div></a><a class="nexmoe-list-item mdui-list-item mdui-ripple" href="/about.html" title="关于网站"><i class="mdui-list-item-icon nexmoefont icon-info-circle"></i><div class="mdui-list-item-content">关于网站</div></a><a class="nexmoe-list-item mdui-list-item mdui-ripple" href="/links.html" title="我的朋友"><i class="mdui-list-item-icon nexmoefont icon-unorderedlist"></i><div class="mdui-list-item-content">我的朋友</div></a></ul><aside id="nexmoe-sidebar"><div class="nexmoe-widget-wrap"><h3 class="nexmoe-widget-title">社交</h3><div class="nexmoe-widget nexmoe-social"><a class="mdui-ripple" href="https://github.com/suikastar/" target="_blank" mdui-tooltip="{content: 'GitHub'}" style="color:#191717;background-color:rgba(25,23,23,.15)"><i class="nexmoefont icon-github"></i> </a><a class="mdui-ripple" href="mailto:me@suikastar.com" target="_blank" mdui-tooltip="{content: '邮箱'}" style="color:#1da1f2;background-color:rgba(29,161,242,.1)"><i class="nexmoefont icon-mail-fill"></i></a></div></div><div class="nexmoe-widget-wrap"><h3 class="nexmoe-widget-title">文章分类</h3><div class="nexmoe-widget"><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/other/">其他</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/code/">编程</a><span class="category-list-count">11</span></li></ul></div></div><div class="nexmoe-widget-wrap"><h3 class="nexmoe-widget-title">标签</h3><div id="randomtagcloud" class="nexmoe-widget tagcloud"><a href="/tags/c/" style="font-size:10px">C</a> <a href="/tags/github/" style="font-size:15px">GitHub</a> <a href="/tags/hexo/" style="font-size:15px">Hexo</a> <a href="/tags/io/" style="font-size:10px">IO</a> <a href="/tags/Java/" style="font-size:10px">Java</a> <a href="/tags/javascript/" style="font-size:20px">JavaScript</a> <a href="/tags/linux/" style="font-size:10px">Linux</a> <a href="/tags/nodejs/" style="font-size:20px">Node.js</a> <a href="/tags/oop/" style="font-size:10px">OOP</a> <a href="/tags/openwrt/" style="font-size:10px">OpenWrt</a> <a href="/tags/python/" style="font-size:10px">Python</a> <a href="/tags/rust/" style="font-size:20px">Rust</a> <a href="/tags/stack/" style="font-size:10px">栈</a> <a href="/tags/thread/" style="font-size:10px">线程</a> <a href="/tags/music/" style="font-size:10px">音乐</a></div></div><div class="nexmoe-widget-wrap"><h3 class="nexmoe-widget-title">文章归档</h3><div class="nexmoe-widget"><ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">2019年09月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">2019年08月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">2019年07月</a></li></ul></div></div></aside><div class="nexmoe-copyright">&copy; 2020 suika<br>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a href="https://nexmoe.com/hexo-theme-nexmoe.html" target="_blank">Nexmoe</a></div></div></div><div id="nexmoe-content"><div class="nexmoe-primary"><div class="nexmoe-post"><div class="nexmoe-post-cover mdui-ripple"><script>var data=get_img_data({default:{url:"https://cdn.jsdelivr.net/gh/suikastar/suikastar.github.io@jsdelivr-20200628040132/images/classroom.jpg",w:1920,h:1080},interval:{"6-19":{url:"https://cdn.jsdelivr.net/gh/suikastar/suikastar.github.io@jsdelivr-20200628040132/images/classroom.jpg",w:1920,h:1080},"19-6":{url:"https://cdn.jsdelivr.net/gh/suikastar/suikastar.github.io@jsdelivr-20200628040132/images/classroom_night_02.jpg",w:1920,h:1080}}}),url=data.url,percentage=100*data.ratio;document.write('<div class="img-responsive" style="padding-bottom:'+percentage+'%;"><img src="'+url+'" alt="Java 中的线程有几种状态"></div>')</script><h1>Java 中的线程有几种状态</h1></div><div class="nexmoe-post-meta"><a><i class="nexmoefont icon-calendar-fill"></i>2019年08月12日</a> <a><i class="nexmoefont icon-areachart"></i>940 字</a> <a><i class="nexmoefont icon-time-circle-fill"></i>大概 5 分钟</a> <a class="nexmoefont icon-appstore-fill -link" href="/categories/code/">编程</a> <a class="nexmoefont icon-tag-fill -link" href="/tags/Java/">Java</a> <a class="nexmoefont icon-tag-fill -link" href="/tags/thread/">线程</a></div><article><p>有说 5 种的，有说 6 种的，还有说 9 种的，各执一词，究竟谁对谁错？</p><a id="more"></a><h2 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h2><p>让我们从 OpenJDK 源码入手，抽丝剥茧，层层深入，揭开线程状态的神秘面纱。</p><h4 id="JDK-源码"><a href="#JDK-源码" class="headerlink" title="JDK 源码"></a>JDK 源码</h4><p>在 java.lang.Thread 包下可以看到使用了枚举类型 State 来定义了 6 种线程状态：</p><ol><li>NEW</li><li>RUNNABLE</li><li>BLOCKED</li><li>WAITING</li><li>TIMED_WAITING</li><li>TERMINATED</li></ol><pre><code class="java">/**
+ * A thread state.  A thread can be in one of the following states:
+ * &lt;ul&gt;
+ * &lt;li&gt;{@link #NEW}&lt;br&gt;
+ *     A thread that has not yet started is in this state.
+ *     &lt;/li&gt;
+ * &lt;li&gt;{@link #RUNNABLE}&lt;br&gt;
+ *     A thread executing in the Java virtual machine is in this state.
+ *     &lt;/li&gt;
+ * &lt;li&gt;{@link #BLOCKED}&lt;br&gt;
+ *     A thread that is blocked waiting for a monitor lock
+ *     is in this state.
+ *     &lt;/li&gt;
+ * &lt;li&gt;{@link #WAITING}&lt;br&gt;
+ *     A thread that is waiting indefinitely for another thread to
+ *     perform a particular action is in this state.
+ *     &lt;/li&gt;
+ * &lt;li&gt;{@link #TIMED_WAITING}&lt;br&gt;
+ *     A thread that is waiting for another thread to perform an action
+ *     for up to a specified waiting time is in this state.
+ *     &lt;/li&gt;
+ * &lt;li&gt;{@link #TERMINATED}&lt;br&gt;
+ *     A thread that has exited is in this state.
+ *     &lt;/li&gt;
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;
+ * A thread can be in only one state at a given point in time.
+ * These states are virtual machine states which do not reflect
+ * any operating system thread states.
+ *
+ * @since   1.5
+ * @see #getState
+ */
+public enum State {
+    /**
+     * Thread state for a thread which has not yet started.
+     */
+    NEW,
+
+    /**
+     * Thread state for a runnable thread.  A thread in the runnable
+     * state is executing in the Java virtual machine but it may
+     * be waiting for other resources from the operating system
+     * such as processor.
+     */
+    RUNNABLE,
+
+    /**
+     * Thread state for a thread blocked waiting for a monitor lock.
+     * A thread in the blocked state is waiting for a monitor lock
+     * to enter a synchronized block/method or
+     * reenter a synchronized block/method after calling
+     * {@link Object#wait() Object.wait}.
+     */
+    BLOCKED,
+
+    /**
+     * Thread state for a waiting thread.
+     * A thread is in the waiting state due to calling one of the
+     * following methods:
+     * &lt;ul&gt;
+     *   &lt;li&gt;{@link Object#wait() Object.wait} with no timeout&lt;/li&gt;
+     *   &lt;li&gt;{@link #join() Thread.join} with no timeout&lt;/li&gt;
+     *   &lt;li&gt;{@link LockSupport#park() LockSupport.park}&lt;/li&gt;
+     * &lt;/ul&gt;
+     *
+     * &lt;p&gt;A thread in the waiting state is waiting for another thread to
+     * perform a particular action.
+     *
+     * For example, a thread that has called &lt;tt&gt;Object.wait()&lt;/tt&gt;
+     * on an object is waiting for another thread to call
+     * &lt;tt&gt;Object.notify()&lt;/tt&gt; or &lt;tt&gt;Object.notifyAll()&lt;/tt&gt; on
+     * that object. A thread that has called &lt;tt&gt;Thread.join()&lt;/tt&gt;
+     * is waiting for a specified thread to terminate.
+     */
+    WAITING,
+
+    /**
+     * Thread state for a waiting thread with a specified waiting time.
+     * A thread is in the timed waiting state due to calling one of
+     * the following methods with a specified positive waiting time:
+     * &lt;ul&gt;
+     *   &lt;li&gt;{@link #sleep Thread.sleep}&lt;/li&gt;
+     *   &lt;li&gt;{@link Object#wait(long) Object.wait} with timeout&lt;/li&gt;
+     *   &lt;li&gt;{@link #join(long) Thread.join} with timeout&lt;/li&gt;
+     *   &lt;li&gt;{@link LockSupport#parkNanos LockSupport.parkNanos}&lt;/li&gt;
+     *   &lt;li&gt;{@link LockSupport#parkUntil LockSupport.parkUntil}&lt;/li&gt;
+     * &lt;/ul&gt;
+     */
+    TIMED_WAITING,
+
+    /**
+     * Thread state for a terminated thread.
+     * The thread has completed execution.
+     */
+    TERMINATED;
+}</code></pre><ul><li>附：<a href="http://hg.openjdk.java.net/jdk8u/jdk8u60/jdk/file/935758609767/src/share/classes/java/lang/Thread.java#l1735" target="_blank" rel="noopener">源码地址</a></li></ul><p>所以 6 种就是正确答案吗？不急着下结论，接着看！</p><h4 id="HotSpot-源码"><a href="#HotSpot-源码" class="headerlink" title="HotSpot 源码"></a>HotSpot 源码</h4><p>在头文件 javaClasses.hpp 中使用了枚举类型 ThreadStatus 来定义了 9 种线程状态：</p><ol><li>NEW</li><li>RUNNABLE</li><li>SLEEPING</li><li>IN_OBJECT_WAIT</li><li>IN_OBJECT_WAIT_TIMED</li><li>PARKED</li><li>PARKED_TIMED</li><li>BLOCKED_ON_MONITOR_ENTER</li><li>TERMINATED</li></ol><pre><code class="cpp">// Java Thread Status for JVMTI and M&amp;M use.
+// This thread status info is saved in threadStatus field of
+// java.lang.Thread java class.
+enum ThreadStatus {
+  NEW                      = 0,
+  RUNNABLE                 = JVMTI_THREAD_STATE_ALIVE +          // runnable / running
+                             JVMTI_THREAD_STATE_RUNNABLE,
+  SLEEPING                 = JVMTI_THREAD_STATE_ALIVE +          // Thread.sleep()
+                             JVMTI_THREAD_STATE_WAITING +
+                             JVMTI_THREAD_STATE_WAITING_WITH_TIMEOUT +
+                             JVMTI_THREAD_STATE_SLEEPING,
+  IN_OBJECT_WAIT           = JVMTI_THREAD_STATE_ALIVE +          // Object.wait()
+                             JVMTI_THREAD_STATE_WAITING +
+                             JVMTI_THREAD_STATE_WAITING_INDEFINITELY +
+                             JVMTI_THREAD_STATE_IN_OBJECT_WAIT,
+  IN_OBJECT_WAIT_TIMED     = JVMTI_THREAD_STATE_ALIVE +          // Object.wait(long)
+                             JVMTI_THREAD_STATE_WAITING +
+                             JVMTI_THREAD_STATE_WAITING_WITH_TIMEOUT +
+                             JVMTI_THREAD_STATE_IN_OBJECT_WAIT,
+  PARKED                   = JVMTI_THREAD_STATE_ALIVE +          // LockSupport.park()
+                             JVMTI_THREAD_STATE_WAITING +
+                             JVMTI_THREAD_STATE_WAITING_INDEFINITELY +
+                             JVMTI_THREAD_STATE_PARKED,
+  PARKED_TIMED             = JVMTI_THREAD_STATE_ALIVE +          // LockSupport.park(long)
+                             JVMTI_THREAD_STATE_WAITING +
+                             JVMTI_THREAD_STATE_WAITING_WITH_TIMEOUT +
+                             JVMTI_THREAD_STATE_PARKED,
+  BLOCKED_ON_MONITOR_ENTER = JVMTI_THREAD_STATE_ALIVE +          // (re-)entering a synchronization block
+                             JVMTI_THREAD_STATE_BLOCKED_ON_MONITOR_ENTER,
+  TERMINATED               = JVMTI_THREAD_STATE_TERMINATED
+};</code></pre><ul><li><a href="http://hg.openjdk.java.net/jdk8u/jdk8u60/hotspot/file/37240c1019fd/src/share/vm/classfile/javaClasses.hpp#l382" target="_blank" rel="noopener">源码地址</a></li></ul><p>那 9 种就是正确答案……吗？等等，接着看！</p><p>在 sun.jvm.hotspot.jdi 包下可以看到使用了接口类型 JVMTIThreadState 来定义了 13 种线程状态：</p><ol><li>JVMTI_THREAD_STATE_ALIVE</li><li>JVMTI_THREAD_STATE_TERMINATED</li><li>JVMTI_THREAD_STATE_RUNNABLE</li><li>JVMTI_THREAD_STATE_WAITING</li><li>JVMTI_THREAD_STATE_WAITING_INDEFINITELY</li><li>JVMTI_THREAD_STATE_WAITING_WITH_TIMEOUT</li><li>JVMTI_THREAD_STATE_SLEEPING</li><li>JVMTI_THREAD_STATE_IN_OBJECT_WAIT</li><li>JVMTI_THREAD_STATE_PARKED</li><li>JVMTI_THREAD_STATE_BLOCKED_ON_MONITOR_ENTER</li><li>JVMTI_THREAD_STATE_SUSPENDED</li><li>JVMTI_THREAD_STATE_INTERRUPTED</li><li>JVMTI_THREAD_STATE_IN_NATIVE</li></ol><pre><code class="cpp">// from JVMTI specification - refer to jvmti.xml
+public interface JVMTIThreadState {
+    public static final int JVMTI_THREAD_STATE_ALIVE = 0x0001;
+    public static final int JVMTI_THREAD_STATE_TERMINATED = 0x0002;
+    public static final int JVMTI_THREAD_STATE_RUNNABLE = 0x0004;
+    public static final int JVMTI_THREAD_STATE_WAITING = 0x0080;
+    public static final int JVMTI_THREAD_STATE_WAITING_INDEFINITELY = 0x0010;
+    public static final int JVMTI_THREAD_STATE_WAITING_WITH_TIMEOUT = 0x0020;
+    public static final int JVMTI_THREAD_STATE_SLEEPING = 0x0040;
+    public static final int JVMTI_THREAD_STATE_IN_OBJECT_WAIT = 0x0100;
+    public static final int JVMTI_THREAD_STATE_PARKED = 0x0200;
+    public static final int JVMTI_THREAD_STATE_BLOCKED_ON_MONITOR_ENTER = 0x0400;
+    public static final int JVMTI_THREAD_STATE_SUSPENDED = 0x100000;
+    public static final int JVMTI_THREAD_STATE_INTERRUPTED = 0x200000;
+    public static final int JVMTI_THREAD_STATE_IN_NATIVE = 0x400000;
+}</code></pre><ul><li><a href="http://hg.openjdk.java.net/jdk8u/jdk8u60/hotspot/file/37240c1019fd/agent/src/share/classes/sun/jvm/hotspot/jdi/JVMTIThreadState.java#l28" target="_blank" rel="noopener">源码地址</a></li></ul><p>emmm……那应该是 13 种（小声）？</p><p>待写</p></article><div class="nexmoe-post-copyright"><i class="mdui-list-item-icon nexmoefont icon-info-circle"></i> <strong>本文作者：</strong>suika<br><strong>本文链接：</strong><a href="http://suikastar.com/posts/31586/" title="http://suikastar.com/posts/31586/" target="_blank" rel="noopener">http://suikastar.com/posts/31586/</a><br><strong>版权声明：</strong>本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议进行许可</div><section class="nexmoe-comment"><script id="dsq-count-scr" src="https://suikastar.disqus.com/count.js" async></script><div id="disqus_thread"></div><script>var disqus_config=function(){this.page.url="http://suikastar.com/posts/31586/",this.page.identifier="http://suikastar.com/posts/31586/"}</script><script id="disqus-thread-script">!function(){var e=document,t=e.createElement("script");t.src="//suikastar.disqus.com/embed.js",t.setAttribute("data-timestamp",+new Date),(e.head||e.body).appendChild(t)}()</script></section></div><div class="nexmoe-hitokoto"><p id="hitokoto">少女祈祷中……</p></div></div></div><script src="https://cdn.jsdelivr.net/npm/mdui@0.4.3/dist/js/mdui.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/smoothscroll-for-websites@1.4.9/SmoothScroll.min.js"></script><script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.9/build/highlight.min.js"></script><script>hljs.initHighlightingOnLoad()</script><script src="https://cdn.jsdelivr.net/gh/suikastar/suikastar.github.io@jsdelivr-20200628040132/js/app.js"></script></body></html>
